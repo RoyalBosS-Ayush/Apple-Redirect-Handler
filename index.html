@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign in with Apple Redirect</title>
+    <script>
+      function closeWindow() {
+        // Send message to opener (Flutter web) or just close
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
+
+        if (window.opener) {
+          window.opener.postMessage({ code, state }, '*');
+        }
+
+        // Give it a bit of time to send
+        setTimeout(() => {
+          window.close();
+        }, 1000);
+      }
+
+      window.onload = closeWindow;
+    </script>
+  </head>
+  <body>
+    <p>Signing in...</p>
+  </body>
+</html>
