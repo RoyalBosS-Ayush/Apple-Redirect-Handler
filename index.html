@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Sign in with Apple Redirect</title>
-    <script>
-      function closeWindow() {
-        // Send message to opener (Flutter web) or just close
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const state = params.get('state');
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // These values could be dynamically inserted by your server
+      const service = getQueryParam("service");
+      const code = getQueryParam("code");
+      const idToken = getQueryParam("id_token");
 
-        if (window.opener) {
-          window.opener.postMessage({ code, state }, '*');
-        }
-
-        // Give it a bit of time to send
-        setTimeout(() => {
-          window.close();
-        }, 1000);
+      if (service === "apple-mobile") {
+        // Redirect to the custom scheme URL
+        const customUrl = `vidyameapplesdk://?code=${encodeURIComponent(code)}&id_token=${encodeURIComponent(idToken)}`;
+        window.location.href = customUrl;
+      } else {
+        // Redirect to Socialite driver URL
+        // e.g., /auth/redirect/google
+        const socialiteRedirectUrl = `/auth/redirect/${encodeURIComponent(service)}`;
+        window.location.href = socialiteRedirectUrl;
       }
+    });
 
-      window.onload = closeWindow;
-    </script>
-  </head>
-  <body>
-    <p>Signing in...</p>
-  </body>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name) || "";
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
 </html>
